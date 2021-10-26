@@ -246,7 +246,6 @@ GLOBAL_VAR(restart_counter)
 
 /world/Reboot(reason = 0, fast_track = FALSE)
 	if (reason || fast_track) //special reboot, do none of the normal stuff
-		SSdbcore.Disconnect()
 		if (usr)
 			log_admin("[key_name(usr)] Has requested an immediate world restart via client side debugging tools")
 			message_admins("[key_name_admin(usr)] Has requested an immediate world restart via client side debugging tools")
@@ -312,17 +311,17 @@ GLOBAL_VAR(restart_counter)
 		var/server_name = CONFIG_GET(string/servername)
 		if (server_name)
 			s += "<b>[server_name]</b> &#8212; "
-		features += "[CONFIG_GET(flag/norespawn) ? "no " : ""]respawn" // removes some useless info from the hub entry
-		if(CONFIG_GET(flag/allow_vote_mode))
-			features += "vote"
-		if(CONFIG_GET(flag/allow_ai))
-			features += "AI allowed"
-		hostedby = CONFIG_GET(string/hostedby)
+//		features += "[CONFIG_GET(flag/norespawn) ? "no " : ""]respawn" // removes some useless info from the hub entry
+//		if(CONFIG_GET(flag/allow_vote_mode))
+//			features += "vote"
+//		if(CONFIG_GET(flag/allow_ai))
+//			features += "AI allowed"
+//		hostedby = CONFIG_GET(string/hostedby)
 
 	s += "<b>[station_name()]</b>";
 	s += " ("
-	s += "<a href=\"https://austation.net/\">" //Change this to wherever you want the hub to link to. links to austation's website on the hub
-	s += "AuStation"  //Replace this with something else. Or ever better, delete it and uncomment the game version. modifies the hub entry link
+	s += "<a href=\"https://discord.gg/69WsShCdxa\">" //Change this to wherever you want the hub to link to. links to austation's website on the hub
+	s += "Discord"  //Replace this with something else. Or ever better, delete it and uncomment the game version. modifies the hub entry link
 	s += "</a>"
 	s += ")\]" //encloses the server title in brackets to make the hub entry fancier
 	s += "<br>[CONFIG_GET(string/servertagline)]<br>" //adds a tagline!
@@ -332,16 +331,22 @@ GLOBAL_VAR(restart_counter)
 		if (M.client)
 			n++
 
-	if(SSmapping.config) // this just stops the runtime, honk.
-		features += "[SSmapping.config.map_name]"	//makes the hub entry display the current map
-
-	if(get_security_level())//makes the hub entry show the security level
-		features += "[get_security_level()] alert"
-
 	if (n > 1)
 		features += "~[n] players"
 	else if (n > 0)
 		features += "~[n] player"
+
+	if(SSmapping.config)
+		features += "[SSmapping.config.map_name]" //makes the hub entry display the current map
+
+	if(GLOB.master_mode) //makes the hub show the gamemode.
+		features += GLOB.master_mode
+
+	if (!GLOB.enter_allowed)
+		features += "closed"
+
+	if(get_security_level()) //makes the hub entry show the security level
+		features += "[get_security_level()] alert"
 
 	if (!host && hostedby)
 		features += "hosted by <b>[hostedby]</b>"

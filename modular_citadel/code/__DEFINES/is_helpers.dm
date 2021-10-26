@@ -1,0 +1,10 @@
+//
+#define issynthliz(A) (is_species(A, /datum/species/synthliz))
+#define ismammal(A) (is_species(A, /datum/species/mammal))
+#define isinsect(A) (is_species(A, /datum/species/insect))
+#define isxenoperson(A) (is_species(A, /datum/species/xeno))
+#define isstartjelly(A) (is_species(A, /datum/species/jelly/roundstartslime))
+#define isarachnid(A) (is_species(A, /datum/species/arachnid))
+#define isborer(A) (istype(A, /mob/living/simple_animal/borer))
+#define isavian(A) (is_species(A, /datum/species/avian))
+#define isaquatic(A) (is_species(A, /datum/species/aquatic))

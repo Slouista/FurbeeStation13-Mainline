@@ -15,6 +15,13 @@
 	var/mob/listeningTo
 	pocket_storage_component_path = /datum/component/storage/concrete/pockets/exo
 
+	var/adjusted = NORMAL_STYLE
+	mutantrace_variation = MUTANTRACE_VARIATION
+	var/tauric = FALSE		//Citadel Add for tauric hardsuits
+	var/taurmode = NOT_TAURIC
+	var/dimension_x = 32
+	var/dimension_y = 32
+	var/center = FALSE	//Should we center the sprite?
 
 /obj/item/clothing/suit/worn_overlays(isinhands = FALSE)
 	. = list()
@@ -22,7 +29,10 @@
 		if(damaged_clothes)
 			. += mutable_appearance('icons/effects/item_damage.dmi', "damaged[blood_overlay_type]")
 		if(HAS_BLOOD_DNA(src))
-			. += mutable_appearance('icons/effects/blood.dmi', "[blood_overlay_type]blood")
+			if(taurmode >= SNEK_TAURIC)
+				. += mutable_appearance('modular_citadel/icons/mob/64x32_effects.dmi', "[blood_overlay_type]blood")
+			else
+				. += mutable_appearance('icons/effects/blood.dmi', "[blood_overlay_type]blood")
 		var/mob/living/carbon/human/M = loc
 		if(ishuman(M) && M.w_uniform)
 			var/obj/item/clothing/under/U = M.w_uniform
@@ -49,10 +59,6 @@
 
 /obj/item/clothing/suit/equipped(mob/user, slot)
 	. = ..()
-	//If we dont have move sounds, ignore
-	if(!islist(move_sound))
-		return
-	//Check if we were taken off.
 	if(slot != ITEM_SLOT_OCLOTHING)
 		if(listeningTo)
 			UnregisterSignal(listeningTo, COMSIG_MOVABLE_MOVED)
@@ -66,6 +72,34 @@
 	//Add new listener
 	RegisterSignal(user, COMSIG_MOVABLE_MOVED, .proc/on_mob_move)
 	listeningTo = user
+	//Handle suit variations
+	if(ishuman(user))
+		var/mob/living/carbon/human/H = user
+
+		if(mutantrace_variation)
+			if(DIGITIGRADE in H.dna.species.species_traits)
+				adjusted = DIGITIGRADE_STYLE
+				H.update_inv_wear_suit()
+			else if(adjusted == DIGITIGRADE_STYLE)
+				adjusted = NORMAL_STYLE
+
+		if(("taur" in H.dna.species.mutant_bodyparts) && (H.dna.features["taur"] != "None"))
+			if(H.dna.features["taur"] in list("Naga", "Tentacle"))
+				taurmode = SNEK_TAURIC
+				if(tauric == TRUE)
+					center = TRUE
+					dimension_x = 64
+			else if(H.dna.features["taur"] in list("Fox","Wolf","Otie","Drake","Lab","Shepherd","Husky","Eevee","Panther","Horse","Cow","Tiger","Deer"))
+				taurmode = PAW_TAURIC
+				if(tauric == TRUE)
+					center = TRUE
+					dimension_x = 64
+		else
+			taurmode = NOT_TAURIC
+			if(tauric == TRUE)
+				center = FALSE
+				dimension_x = 32
+		H.update_inv_wear_suit()
 
 /obj/item/clothing/suit/dropped(mob/user)
 	. = ..()

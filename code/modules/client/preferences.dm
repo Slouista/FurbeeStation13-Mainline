@@ -5,7 +5,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	//doohickeys for savefiles
 	var/path
 	var/default_slot = 1				//Holder so it doesn't default to slot 1, rather the last one used
-	var/max_save_slots = 3
+	var/max_save_slots = 20
 
 	//non-preference stuff
 	var/muted = 0
@@ -85,8 +85,45 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/facial_hair_color = "000"		//Facial hair color
 	var/skin_tone = "caucasian1"		//Skin color
 	var/eye_color = "000"				//Eye color
+	var/wing_color = "fff"				//Wing color
 	var/datum/species/pref_species = new /datum/species/human()	//Mutant race
-	var/list/features = list("mcolor" = "FFF", "ethcolor" = "9c3030", "tail_lizard" = "Smooth", "tail_human" = "None", "snout" = "Round", "horns" = "None", "ears" = "None", "wings" = "None", "frills" = "None", "spines" = "None", "body_markings" = "None", "legs" = "Normal Legs", "moth_wings" = "Plain", "ipc_screen" = "Blue", "ipc_antenna" = "None", "ipc_chassis" = "Morpheus Cyberkinetics(Greyscale)", "insect_type" = "Common Fly")
+	var/list/features = list(
+		"mcolor" = "FFF",
+		"ethcolor" = "9c3030",
+		"tail_lizard" = "Smooth",
+		"tail_human" = "None",
+		"snout" = "Round",
+		"horns" = "None",
+		"ears" = "None",
+		"wings" = "None",
+		"frills" = "None",
+		"spines" = "None",
+		"body_markings" = "None",
+		"legs" = "Normal Legs",
+		"moth_wings" = "Plain",
+		"ipc_screen" = "Blue",
+		"ipc_antenna" = "None",
+		"ipc_chassis" = "Morpheus Cyberkinetics(Greyscale)",
+		"insect_type" = "Common Fly",
+		"moth_wings" = "Plain",
+		"moth_fluff" = "None",
+		"moth_markings" = "None",
+		"mcolor2" = "FFF",
+		"mcolor3" = "FFF",
+		"arachnid_legs" = "Plain",
+		"arachnid_spinneret" = "Plain",
+		"arachnid_mandibles" = "Plain",
+		"mam_body_markings" = "Plain",
+		"mam_ears" = "None",
+		"mam_snouts" = "None",
+		"mam_tail" = "None",
+		"mam_tail_animated" = "None",
+		"deco_wings" = "None",
+		"xenodorsal" = "Standard",
+		"xenohead" = "Standard",
+		"xenotail" = "Xenomorph Tail",
+		"taur" = "None",
+		"flavor_text" = "")
 
 	var/list/custom_names = list()
 	var/preferred_ai_core_display = "Blue"
@@ -132,6 +169,13 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/gear_tab = "General"
 
 	var/action_buttons_screen_locs = list()
+/*
+	//backgrounds
+	var/mutable_appearance/character_background
+	var/icon/bgstate = "000"
+	var/list/bgstate_options = list("000", "midgrey", "hiro", "FFF", "white", "steel", "techmaint", "dark", "plating", "reinforced")
+*/
+	var/show_mismatched_markings = FALSE //determines whether or not the markings lists should show markings that don't match the currently selected species. Intentionally left unsaved.
 
 /datum/preferences/New(client/C)
 	parent = C
@@ -162,7 +206,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	return
 
 #define APPEARANCE_CATEGORY_COLUMN "<td valign='top' width='14%'>"
-#define MAX_MUTANT_ROWS 4
+#define MAX_MUTANT_ROWS 6
 
 /datum/preferences/proc/ShowChoices(mob/user)
 	if(!user || !user.client)
@@ -290,9 +334,16 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 				if(!use_skintones)
 					dat += APPEARANCE_CATEGORY_COLUMN
 
-				dat += "<h3>Mutant Color</h3>"
+				dat += "<h2>Body</h2>"
 
+				dat += "<b>Primary Color:</b><BR>"
 				dat += "<span style='border: 1px solid #161616; background-color: #[features["mcolor"]];'>&nbsp;&nbsp;&nbsp;</span> <a href='?_src_=prefs;preference=mutant_color;task=input'>Change</a><BR>"
+
+				dat += "<b>Secondary Color:</b><BR>"
+				dat += "<span style='border: 1px solid #161616; background-color: #[features["mcolor2"]];'>&nbsp;&nbsp;&nbsp;</span> <a href='?_src_=prefs;preference=mutant_color2;task=input'>Change</a><BR>"
+
+				dat += "<b>Tertiary Color:</b><BR>"
+				dat += "<span style='border: 1px solid #161616; background-color: #[features["mcolor3"]];'>&nbsp;&nbsp;&nbsp;</span> <a href='?_src_=prefs;preference=mutant_color3;task=input'>Change</a><BR>"
 
 				mutant_colors = TRUE
 
@@ -541,6 +592,185 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						dat += "</td>"
 						mutant_category = 0
 
+			// edit adds snowflake mutant body parts.
+			if("deco_wings" in pref_species.default_features)
+				if(!mutant_category)
+					dat += APPEARANCE_CATEGORY_COLUMN
+
+				dat += "<h3>Decorative wings</h3>"
+
+				dat += "<a style='display:block;width:100px' href='?_src_=prefs;preference=deco_wings;task=input'>[features["deco_wings"]]</a>"
+				dat += "<span style='border:1px solid #161616; background-color: #[wing_color];'>&nbsp;&nbsp;&nbsp;</span> <a href='?_src_=prefs;preference=wings_color;task=input'>Change</a><BR>"
+
+			if("moth_markings" in pref_species.default_features)
+				if(!mutant_category)
+					dat += APPEARANCE_CATEGORY_COLUMN
+
+				dat += "<h3>Moth markings</h3>"
+
+				dat += "<a href='?_src_=prefs;preference=moth_markings;task=input'>[features["moth_markings"]]</a><BR>"
+
+				mutant_category++
+				if(mutant_category >= MAX_MUTANT_ROWS)
+					dat += "</td>"
+					mutant_category = 0
+
+			if("moth_fluff" in pref_species.default_features)
+				if(!mutant_category)
+					dat += APPEARANCE_CATEGORY_COLUMN
+
+				dat += "<h3>Moth Fluff</h3>"
+
+				dat += "<a style='display:block;width:100px' href='?_src_=prefs;preference=moth_fluffs;task=input'>[features["moth_fluff"]]</a>"
+				mutant_category++
+				if(mutant_category >= MAX_MUTANT_ROWS)
+					dat += "</td>"
+					mutant_category = 0
+
+			if("mam_tail" in pref_species.default_features)
+				if(!mutant_category)
+					dat += APPEARANCE_CATEGORY_COLUMN
+
+				dat += "<h3>Tail</h3>"
+
+				dat += "<a style='display:block;width:100px' href='?_src_=prefs;preference=mam_tail;task=input'>[features["mam_tail"]]</a>"
+
+				mutant_category++
+				if(mutant_category >= MAX_MUTANT_ROWS)
+					dat += "</td>"
+					mutant_category = 0
+
+			if("mam_body_markings" in pref_species.default_features)
+				if(!mutant_category)
+					dat += APPEARANCE_CATEGORY_COLUMN
+
+				dat += "<h3>Species Markings</h3>"
+
+				dat += "<a style='display:block;width:100px' href='?_src_=prefs;preference=mam_body_markings;task=input'>[features["mam_body_markings"]]</a>"
+
+				mutant_category++
+				if(mutant_category >= MAX_MUTANT_ROWS)
+					dat += "</td>"
+
+			if("mam_ears" in pref_species.default_features)
+				if(!mutant_category)
+					dat += APPEARANCE_CATEGORY_COLUMN
+
+				dat += "<h3>Ears</h3>"
+
+				dat += "<a style='display:block;width:100px' href='?_src_=prefs;preference=mam_ears;task=input'>[features["mam_ears"]]</a>"
+
+				mutant_category++
+				if(mutant_category >= MAX_MUTANT_ROWS)
+					dat += "</td>"
+					mutant_category = 0
+
+			if("mam_snouts" in pref_species.default_features)
+				if(!mutant_category)
+					dat += APPEARANCE_CATEGORY_COLUMN
+
+				dat += "<h3>Snout</h3>"
+
+				dat += "<a style='display:block;width:100px' href='?_src_=prefs;preference=mam_snouts;task=input'>[features["mam_snouts"]]</a>"
+
+				mutant_category++
+				if(mutant_category >= MAX_MUTANT_ROWS)
+					dat += "</td>"
+					mutant_category = 0
+
+			if("taur" in pref_species.default_features)
+				if(!mutant_category)
+					dat += APPEARANCE_CATEGORY_COLUMN
+
+				dat += "<h3>Tauric Body</h3>"
+
+				dat += "<a style='display:block;width:100px' href='?_src_=prefs;preference=taur;task=input'>[features["taur"]]</a>"
+
+				mutant_category++
+				if(mutant_category >= MAX_MUTANT_ROWS)
+					dat += "</td>"
+					mutant_category = 0
+
+			if("xenohead" in pref_species.default_features)
+				if(!mutant_category)
+					dat += APPEARANCE_CATEGORY_COLUMN
+
+				dat += "<h3>Caste Head</h3>"
+
+				dat += "<a style='display:block;width:100px' href='?_src_=prefs;preference=xenohead;task=input'>[features["xenohead"]]</a>"
+
+				mutant_category++
+				if(mutant_category >= MAX_MUTANT_ROWS)
+					dat += "</td>"
+					mutant_category = 0
+
+			if("xenotail" in pref_species.default_features)
+				if(!mutant_category)
+					dat += APPEARANCE_CATEGORY_COLUMN
+
+				dat += "<h3>Tail</h3>"
+
+				dat += "<a style='display:block;width:100px' href='?_src_=prefs;preference=xenotail;task=input'>[features["xenotail"]]</a>"
+
+				mutant_category++
+				if(mutant_category >= MAX_MUTANT_ROWS)
+					dat += "</td>"
+					mutant_category = 0
+
+			if("xenodorsal" in pref_species.default_features)
+				if(!mutant_category)
+					dat += APPEARANCE_CATEGORY_COLUMN
+
+				dat += "<h3>Dorsal Spines</h3>"
+
+				dat += "<a style='display:block;width:100px' href='?_src_=prefs;preference=xenodorsal;task=input'>[features["xenodorsal"]]</a>"
+
+				mutant_category++
+				if(mutant_category >= MAX_MUTANT_ROWS)
+					dat += "</td>"
+					mutant_category = 0
+
+			if("arachnid_legs" in pref_species.default_features)
+				if(!mutant_category)
+					dat += APPEARANCE_CATEGORY_COLUMN
+
+				dat += "<h3>Arachnid legs</h3>"
+
+				dat += "<a href='?_src_=prefs;preference=arachnid_legs;task=input'>[features["arachnid_legs"]]</a><BR>"
+
+				mutant_category++
+				if(mutant_category >= MAX_MUTANT_ROWS)
+					dat += "</td>"
+					mutant_category = 0
+
+			if("arachnid_spinneret" in pref_species.default_features)
+				if(!mutant_category)
+					dat += APPEARANCE_CATEGORY_COLUMN
+
+				dat += "<h3>Arachnid spinneret</h3>"
+
+				dat += "<a href='?_src_=prefs;preference=arachnid_spinneret;task=input'>[features["arachnid_spinneret"]]</a><BR>"
+
+				mutant_category++
+				if(mutant_category >= MAX_MUTANT_ROWS)
+					dat += "</td>"
+					mutant_category = 0
+
+			if("arachnid_mandibles" in pref_species.default_features)
+				if(!mutant_category)
+					dat += APPEARANCE_CATEGORY_COLUMN
+
+				dat += "<h3>Arachnid mandibles</h3>"
+
+				dat += "<a href='?_src_=prefs;preference=arachnid_mandibles;task=input'>[features["arachnid_mandibles"]]</a><BR>"
+
+				mutant_category++
+				if(mutant_category >= MAX_MUTANT_ROWS)
+					dat += "</td>"
+					mutant_category = 0
+
+			//end
+
 			if(mutant_category)
 				dat += "</td>"
 				mutant_category = 0
@@ -703,8 +933,8 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 			var/firstcat = 1
 			for(var/category in GLOB.loadout_categories)
-				if(category == "Donator" && (!LAZYLEN(GLOB.patrons) || !CONFIG_GET(flag/donator_items)))
-					continue
+				//if(category == "Donator" && (!LAZYLEN(GLOB.patrons) || !CONFIG_GET(flag/donator_items)))
+					//continue
 				if(firstcat)
 					firstcat = 0
 				else
@@ -1250,10 +1480,10 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	if(href_list["preference"] == "gear")
 		if(href_list["purchase_gear"])
 			var/datum/gear/TG = GLOB.gear_datums[href_list["purchase_gear"]]
-			if(TG.sort_category == "Donator")
-				if(CONFIG_GET(flag/donator_items) && alert(parent, "This item is only accessible to our patrons. Would you like to subscribe?", "Patron Locked", "Yes", "No") == "Yes")
-					parent.donate()
-			else if(TG.cost < user.client.get_metabalance())
+			//if(TG.sort_category == "Donator")
+				//if(CONFIG_GET(flag/donator_items) && alert(parent, "This item is only accessible to our patrons. Would you like to subscribe?", "Patron Locked", "Yes", "No") == "Yes")
+					//parent.donate()
+			if(TG.cost < user.client.get_metabalance())
 				purchased_gear += TG.id
 				TG.purchase(user.client)
 				user.client.inc_metabalance((TG.cost * -1), TRUE, "Purchased [TG.display_name].")
@@ -1475,22 +1705,41 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						var/new_species_type = GLOB.species_list[result]
 						var/datum/species/new_species = new new_species_type()
 
-						if (!CONFIG_GET(keyed_list/paywall_races)[new_species.id] || IS_PATRON(parent.ckey) || parent.holder)
-							pref_species = new_species
+						//if (!CONFIG_GET(keyed_list/paywall_races)[new_species.id] || IS_PATRON(parent.ckey) || parent.holder)
+						pref_species = new_species
+						if(!("body_markings" in pref_species.default_features))
+							features["body_markings"] = "None"
+						if(!("mam_body_markings" in pref_species.default_features))
+							features["mam_body_markings"] = "None"
+						if("mam_body_markings" in pref_species.default_features)
+							if(features["mam_body_markings"] == "None")
+								features["mam_body_markings"] = "Plain"
+						if("tail_lizard" in pref_species.default_features)
+							features["tail_lizard"] = "Smooth"
+						if(pref_species.id == "felinid")
+							features["mam_tail"] = "Cat"
+							features["mam_ears"] = "Cat"
+
 							//Now that we changed our species, we must verify that the mutant colour is still allowed.
 							var/temp_hsv = RGBtoHSV(features["mcolor"])
 							if(features["mcolor"] == "#000" || (!(MUTCOLORS_PARTSONLY in pref_species.species_traits) && ReadHSV(temp_hsv)[3] < ReadHSV("#7F7F7F")[3]))
 								features["mcolor"] = pref_species.default_color
+							if(features["mcolor2"] == "#000" || (!(MUTCOLORS_PARTSONLY in pref_species.species_traits) && ReadHSV(temp_hsv)[3] < ReadHSV("#202020")[3]))
+								features["mcolor2"] = pref_species.default_color
+							if(features["mcolor3"] == "#000" || (!(MUTCOLORS_PARTSONLY in pref_species.species_traits) && ReadHSV(temp_hsv)[3] < ReadHSV("#202020")[3]))
+								features["mcolor3"] = pref_species.default_color
+
 							//Set our forced bodyparts
 							for(var/forced_part in pref_species.forced_features)
 								//Get the forced type
 								var/forced_type = pref_species.forced_features[forced_part]
 								//Apply the forced bodypart.
 								features[forced_part] = forced_type
+						/*
 						else
 							if(alert(parent, "This species is only accessible to our patrons. Would you like to subscribe?", "Patron Locked", "Yes", "No") == "Yes")
 								parent.donate()
-
+						*/
 
 				if("mutant_color")
 					var/new_mutantcolor = input(user, "Choose your character's alien/mutant color:", "Character Preference","#"+features["mcolor"]) as color|null
@@ -1498,8 +1747,30 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						var/temp_hsv = RGBtoHSV(new_mutantcolor)
 						if(new_mutantcolor == "#000000")
 							features["mcolor"] = pref_species.default_color
-						else if((MUTCOLORS_PARTSONLY in pref_species.species_traits) || ReadHSV(temp_hsv)[3] >= ReadHSV("#7F7F7F")[3]) // mutantcolors must be bright, but only if they affect the skin
+						else if((MUTCOLORS_PARTSONLY in pref_species.species_traits) || ReadHSV(temp_hsv)[3] >= ReadHSV("#202020")[3]) // mutantcolors must be bright, but only if they affect the skin
 							features["mcolor"] = sanitize_hexcolor(new_mutantcolor)
+						else
+							to_chat(user, "<span class='danger'>Invalid color. Your color is not bright enough.</span>")
+
+				if("mutant_color2")
+					var/new_mutantcolor = input(user, "Choose your character's secondary alien/mutant color:", "Character Preference") as color|null
+					if(new_mutantcolor)
+						var/temp_hsv = RGBtoHSV(new_mutantcolor)
+						if(new_mutantcolor == "#000000")
+							features["mcolor2"] = pref_species.default_color
+						else if((MUTCOLORS_PARTSONLY in pref_species.species_traits) || ReadHSV(temp_hsv)[3] >= ReadHSV("#202020")[3]) // mutantcolors must be bright, but only if they affect the skin
+							features["mcolor2"] = sanitize_hexcolor(new_mutantcolor)
+						else
+							to_chat(user, "<span class='danger'>Invalid color. Your color is not bright enough.</span>")
+
+				if("mutant_color3")
+					var/new_mutantcolor = input(user, "Choose your character's tertiary alien/mutant color:", "Character Preference") as color|null
+					if(new_mutantcolor)
+						var/temp_hsv = RGBtoHSV(new_mutantcolor)
+						if(new_mutantcolor == "#000000")
+							features["mcolor3"] = pref_species.default_color
+						else if((MUTCOLORS_PARTSONLY in pref_species.species_traits) || ReadHSV(temp_hsv)[3] >= ReadHSV("#202020")[3]) // mutantcolors must be bright, but only if they affect the skin
+							features["mcolor3"] = sanitize_hexcolor(new_mutantcolor)
 						else
 							to_chat(user, "<span class='danger'>Invalid color. Your color is not bright enough.</span>")
 
@@ -1514,18 +1785,80 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					new_tail = input(user, "Choose your character's tail:", "Character Preference") as null|anything in GLOB.tails_list_lizard
 					if(new_tail)
 						features["tail_lizard"] = new_tail
+						if(new_tail != "None")
+							features["taur"] = "None"
+							features["tail_human"] = "None"
+							features["mam_tail"] = "None"
 
 				if("tail_human")
+					var/list/snowflake_tails_list = list()
+					for(var/path in GLOB.tails_list_human)
+						var/datum/sprite_accessory/tails/human/instance = GLOB.tails_list_human[path]
+						if(istype(instance, /datum/sprite_accessory))
+							var/datum/sprite_accessory/S = instance
+							if(!show_mismatched_markings && S.recommended_species && !S.recommended_species.Find(pref_species.id))
+								continue
+							//if((!S.ckeys_allowed) || (S.ckeys_allowed.Find(user.client.ckey)))
+							snowflake_tails_list[S.name] = path
 					var/new_tail
-					new_tail = input(user, "Choose your character's tail:", "Character Preference") as null|anything in GLOB.tails_list_human
+					new_tail = input(user, "Choose your character's tail:", "Character Preference") as null|anything in snowflake_tails_list
 					if(new_tail)
 						features["tail_human"] = new_tail
+						if(new_tail != "None")
+							features["taur"] = "None"
+							features["tail_lizard"] = "None"
+							features["mam_tail"] = "None"
+
+				if("mam_tail")
+					var/list/snowflake_tails_list = list()
+					for(var/path in GLOB.mam_tails_list)
+						var/datum/sprite_accessory/mam_tails/instance = GLOB.mam_tails_list[path]
+						if(istype(instance, /datum/sprite_accessory))
+							var/datum/sprite_accessory/S = instance
+							if(!show_mismatched_markings && S.recommended_species && !S.recommended_species.Find(pref_species.id))
+								continue
+							//if((!S.ckeys_allowed) || (S.ckeys_allowed.Find(user.client.ckey)))
+							snowflake_tails_list[S.name] = path
+					var/new_tail
+					new_tail = input(user, "Choose your character's tail:", "Character Preference") as null|anything in snowflake_tails_list
+					if(new_tail)
+						features["mam_tail"] = new_tail
+						if(new_tail != "None")
+							features["taur"] = "None"
+							features["tail_human"] = "None"
+							features["tail_lizard"] = "None"
 
 				if("snout")
+					var/list/snowflake_snouts_list = list()
+					for(var/path in GLOB.snouts_list)
+						var/datum/sprite_accessory/mam_snouts/instance = GLOB.snouts_list[path]
+						if(istype(instance, /datum/sprite_accessory))
+							var/datum/sprite_accessory/S = instance
+							if(!show_mismatched_markings && S.recommended_species && !S.recommended_species.Find(pref_species.id))
+								continue
+							//if((!S.ckeys_allowed) || (S.ckeys_allowed.Find(user.client.ckey)))
+							snowflake_snouts_list[S.name] = path
 					var/new_snout
-					new_snout = input(user, "Choose your character's snout:", "Character Preference") as null|anything in GLOB.snouts_list
+					new_snout = input(user, "Choose your character's snout:", "Character Preference") as null|anything in snowflake_snouts_list
 					if(new_snout)
 						features["snout"] = new_snout
+						features["mam_snouts"] = "None"
+
+				if("mam_snouts")
+					var/list/snowflake_mam_snouts_list = list()
+					for(var/path in GLOB.mam_snouts_list)
+						var/datum/sprite_accessory/mam_snouts/instance = GLOB.mam_snouts_list[path]
+						if(istype(instance, /datum/sprite_accessory))
+							var/datum/sprite_accessory/S = instance
+							if(!show_mismatched_markings && S.recommended_species && !S.recommended_species.Find(pref_species.id))
+								continue
+							//if((!S.ckeys_allowed) || (S.ckeys_allowed.Find(user.client.ckey)))
+							snowflake_mam_snouts_list[S.name] = path
+					var/new_mam_snouts
+					new_mam_snouts = input(user, "Choose your character's snout:", "Character Preference") as null|anything in snowflake_mam_snouts_list
+					if(new_mam_snouts)
+						features["mam_snouts"] = new_mam_snouts
+						features["snout"] = "None"
 
 				if("horns")
 					var/new_horns
@@ -1544,6 +1877,14 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					new_wings = input(user, "Choose your character's wings:", "Character Preference") as null|anything in GLOB.r_wings_list
 					if(new_wings)
 						features["wings"] = new_wings
+
+				if("wings_color")
+					var/new_wing_color = input(user, "Choose your character's wing colour:", "Character Preference","#"+wing_color) as color|null
+					if(new_wing_color)
+						if (new_wing_color == "#000000")
+							wing_color = "#FFFFFF"
+						else
+							wing_color = sanitize_hexcolor(new_wing_color)
 
 				if("frills")
 					var/new_frills
@@ -1568,14 +1909,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					new_legs = input(user, "Choose your character's legs:", "Character Preference") as null|anything in GLOB.legs_list
 					if(new_legs)
 						features["legs"] = new_legs
-
-				if("moth_wings")
-					var/new_moth_wings
-
-					new_moth_wings = input(user, "Choose your character's wings:", "Character Preference") as null|anything in GLOB.moth_wings_list
-
-					if(new_moth_wings)
-						features["moth_wings"] = new_moth_wings
 
 				if("ipc_screen")
 					var/new_ipc_screen
@@ -1609,10 +1942,149 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					if(new_insect_type)
 						features["insect_type"] = new_insect_type
 
+				if("arachnid_legs")
+					var/new_arachnid_legs
+					new_arachnid_legs = input(user, "Choose your character's variant of arachnid legs:", "Character Preference") as null|anything in GLOB.arachnid_legs_list
+					if(new_arachnid_legs)
+						features["arachnid_legs"] = new_arachnid_legs
+
+				if("arachnid_spinneret")
+					var/new_arachnid_spinneret
+					new_arachnid_spinneret = input(user, "Choose your character's spinneret markings:", "Character Preference") as null|anything in GLOB.arachnid_spinneret_list
+					if(new_arachnid_spinneret)
+						features["arachnid_spinneret"] = new_arachnid_spinneret
+
+				if("arachnid_mandibles")
+					var/new_arachnid_mandibles
+					new_arachnid_mandibles = input(user, "Choose your character's variant of mandibles:", "Character Preference") as null|anything in GLOB.arachnid_mandibles_list
+					if (new_arachnid_mandibles)
+						features["arachnid_mandibles"] = new_arachnid_mandibles
+
 				if("s_tone")
 					var/new_s_tone = input(user, "Choose your character's skin-tone:", "Character Preference")  as null|anything in GLOB.skin_tones
 					if(new_s_tone)
 						skin_tone = new_s_tone
+
+				if("moth_wings")
+					var/new_moth_wings
+
+					new_moth_wings = input(user, "Choose your character's wings:", "Character Preference") as null|anything in GLOB.moth_wings_list
+
+					if(new_moth_wings)
+						features["moth_wings"] = new_moth_wings
+
+				if("moth_fluffs")
+					var/new_moth_fluff
+					new_moth_fluff = input(user, "Choose your character's fluff:", "Character Preference") as null|anything in GLOB.moth_fluffs_list
+					if(new_moth_fluff)
+						features["moth_fluff"] = new_moth_fluff
+
+				if("moth_markings")
+					var/new_moth_markings
+					new_moth_markings = input(user, "Choose your character's markings:", "Character Preference") as null|anything in GLOB.moth_markings_list
+					if(new_moth_markings)
+						features["moth_markings"] = new_moth_markings
+
+				if("deco_wings")
+					var/new_deco_wings
+					new_deco_wings = input(user, "Choose your character's wings:", "Character Preference") as null|anything in GLOB.deco_wings_list
+					if(new_deco_wings)
+						features["deco_wings"] = new_deco_wings
+
+				if("taur")
+					var/list/snowflake_taur_list = list()
+					for(var/path in GLOB.taur_list)
+						var/datum/sprite_accessory/taur/instance = GLOB.taur_list[path]
+						if(istype(instance, /datum/sprite_accessory))
+							var/datum/sprite_accessory/S = instance
+							if(!show_mismatched_markings && S.recommended_species && !S.recommended_species.Find(pref_species.id))
+								continue
+							//if((!S.ckeys_allowed) || (S.ckeys_allowed.Find(user.client.ckey)))
+							snowflake_taur_list[S.name] = path
+					var/new_taur
+					new_taur = input(user, "Choose your character's tauric body:", "Character Preference") as null|anything in snowflake_taur_list
+					if(new_taur)
+						features["taur"] = new_taur
+						if(new_taur != "None")
+							features["mam_tail"] = "None"
+							features["xenotail"] = "None"
+							features["tail_human"] = "None"
+							features["tail_lizard"] = "None"
+
+				if("ears")
+					var/list/snowflake_ears_list = list()
+					for(var/path in GLOB.ears_list)
+						var/datum/sprite_accessory/ears/instance = GLOB.ears_list[path]
+						if(istype(instance, /datum/sprite_accessory))
+							var/datum/sprite_accessory/S = instance
+							if(!show_mismatched_markings && S.recommended_species && !S.recommended_species.Find(pref_species.id))
+								continue
+							//if((!S.ckeys_allowed) || (S.ckeys_allowed.Find(user.client.ckey)))
+							snowflake_ears_list[S.name] = path
+					var/new_ears
+					new_ears = input(user, "Choose your character's ears:", "Character Preference") as null|anything in snowflake_ears_list
+					if(new_ears)
+						features["ears"] = new_ears
+
+				if("mam_ears")
+					var/list/snowflake_ears_list = list()
+					for(var/path in GLOB.mam_ears_list)
+						var/datum/sprite_accessory/mam_ears/instance = GLOB.mam_ears_list[path]
+						if(istype(instance, /datum/sprite_accessory))
+							var/datum/sprite_accessory/S = instance
+							if(!show_mismatched_markings && S.recommended_species && !S.recommended_species.Find(pref_species.id))
+								continue
+							//if((!S.ckeys_allowed) || (S.ckeys_allowed.Find(user.client.ckey)))
+							snowflake_ears_list[S.name] = path
+					var/new_ears
+					new_ears = input(user, "Choose your character's ears:", "Character Preference") as null|anything in snowflake_ears_list
+					if(new_ears)
+						features["mam_ears"] = new_ears
+
+				if("mam_body_markings")// Working mam_body_markings code, it was hard to get working but here it is.
+					var/list/snowflake_markings_list = list()
+					for(var/path in GLOB.mam_body_markings_list)
+						var/datum/sprite_accessory/mam_body_markings/instance = GLOB.mam_body_markings_list[path]
+						if(istype(instance, /datum/sprite_accessory))
+							var/datum/sprite_accessory/S = instance
+							if(!show_mismatched_markings && S.recommended_species && !S.recommended_species.Find(pref_species.id))
+								continue
+							//if((!S.ckeys_allowed) || (S.ckeys_allowed.Find(user.client.ckey)))
+							snowflake_markings_list[S.name] = path
+					var/new_mam_body_markings
+					new_mam_body_markings = input(user, "Choose your character's body markings:", "Character Preference") as null|anything in snowflake_markings_list
+					if(new_mam_body_markings)
+						features["mam_body_markings"] = new_mam_body_markings
+						if(new_mam_body_markings != "None")
+							features["body_markings"] = "None"
+						else if(new_mam_body_markings == "None")
+							features["mam_body_markings"] = "Plain"
+							features["body_markings"] = "None"
+						update_preview_icon()
+
+				//Xeno Bodyparts
+				if("xenohead")//Head or caste type
+					var/new_head
+					new_head = input(user, "Choose your character's caste:", "Character Preference") as null|anything in GLOB.xeno_head_list
+					if(new_head)
+						features["xenohead"] = new_head
+
+				if("xenotail")//Currently one one type, more maybe later if someone sprites them. Might include animated variants in the future.
+					var/new_tail
+					new_tail = input(user, "Choose your character's tail:", "Character Preference") as null|anything in GLOB.xeno_tail_list
+					if(new_tail)
+						features["xenotail"] = new_tail
+						if(new_tail != "None")
+							features["mam_tail"] = "None"
+							features["taur"] = "None"
+							features["tail_human"] = "None"
+							features["tail_lizard"] = "None"
+
+				if("xenodorsal")
+					var/new_dors
+					new_dors = input(user, "Choose your character's dorsal tube type:", "Character Preference") as null|anything in GLOB.xeno_dorsal_list
+					if(new_dors)
+						features["xenodorsal"] = new_dors
 
 				if("ooccolor")
 					var/new_ooccolor = input(user, "Choose your OOC colour:", "Game Preference",ooccolor) as color|null
@@ -1860,7 +2332,8 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 							pixel_size = PIXEL_SCALING_3X
 						if(PIXEL_SCALING_3X)
 							pixel_size = PIXEL_SCALING_AUTO
-					user.client.view_size.resetToDefault(getScreenSize(user))	//Fix our viewport size so it doesn't reset on change
+					user.client.view_size.setDefault(getScreenSize(user))	//Fix our viewport size so it doesn't reset on change
+					user.client.view_size.apply() //Let's winset() it so it actually works
 
 				if("scaling_method")
 					switch(scaling_method)
@@ -2000,6 +2473,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		organ_eyes.old_eye_color = eye_color
 	character.hair_color = hair_color
 	character.facial_hair_color = facial_hair_color
+	character.wing_color = wing_color
 
 	character.skin_tone = skin_tone
 	character.hair_style = hair_style
@@ -2030,7 +2504,22 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 	if("tail_lizard" in pref_species.default_features)
 		character.dna.species.mutant_bodyparts |= "tail_lizard"
+// digitigrade code
+	if("mam_tail" in pref_species.default_features)
+		character.dna.species.mutant_bodyparts |= "mam_tail"
+	if("xenotail" in pref_species.default_features)
+		character.dna.species.mutant_bodyparts |= "xenotail"
 
+	if(("legs" in character.dna.species.mutant_bodyparts) && character.dna.features["legs"] == "Digitigrade Legs")
+		pref_species.species_traits |= DIGITIGRADE
+	else
+		pref_species.species_traits -= DIGITIGRADE
+
+	if(DIGITIGRADE in pref_species.species_traits)
+		character.Digitigrade_Leg_Swap(FALSE)
+	else
+		character.Digitigrade_Leg_Swap(TRUE)
+//
 	if(icon_updates)
 		character.update_body()
 		character.update_hair()
@@ -2076,8 +2565,8 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 /// Handles adding and removing donator items from clients
 /datum/preferences/proc/handle_donator_items()
 	var/datum/loadout_category/DLC = GLOB.loadout_categories["Donator"] // stands for donator loadout category but the other def for DLC works too xD
-	if(!LAZYLEN(GLOB.patrons) || !CONFIG_GET(flag/donator_items)) // donator items are only accesibile by servers with a patreon
-		return
+	//if(!LAZYLEN(GLOB.patrons) || !CONFIG_GET(flag/donator_items)) // donator items are only accesibile by servers with a patreon // no paywall content on furbee
+	//	return
 	// austation begin -- fixes some lint errors with the patreon stuff
 	//if(IS_PATRON(parent.ckey) || (parent in GLOB.admins))
 	for(var/gear_id in DLC.gear)

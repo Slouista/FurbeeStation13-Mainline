@@ -2,18 +2,18 @@
 AUTOSANDBOX_ENABLED
 
 ## The threshold at which the server will automatically swap from secret to sandbox if server population is less than or equal to this number (default: 5)
-AUTOSANDBOX_MIN 5
+AUTOSANDBOX_MIN 1
 
 ## The threshold at which the server will automatically swap from sandbox to secret if server population is greater than or equal to this number (default: 10)
-AUTOSANDBOX_MAX 10
+AUTOSANDBOX_MAX 2
 
 ## Server tagline: This will appear right below the server's title.
-# SERVERTAGLINE A generic TG-based server
+SERVERTAGLINE A Furry Bee-Based Server.
 
 ## Bluespace Miners.
 
 ## Amount of miner boards in the RD's locker at roundstart.
-ROUNDSTART_BLUESPACE_MINERS 0
+ROUNDSTART_BLUESPACE_MINERS 1
 
 ## Enable the bluespace miner research node?
-#BSMINER_RESEARCHABLE
+BSMINER_RESEARCHABLE

@@ -14,6 +14,7 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 
 	var/hair_color	// this allows races to have specific hair colors... if null, it uses the H's hair/facial hair colors. if "mutcolor", it uses the H's mutant_color
 	var/hair_alpha = 255	// the alpha used by the hair. 255 is completely solid, 0 is transparent.
+	var/wing_color
 
 	var/use_skintones = 0	// does it use skintones or not? (spoiler alert this is only used by humans)
 	var/exotic_blood = ""	// If your race wants to bleed something other than bog standard blood, change this to reagent id.
@@ -81,6 +82,8 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 	var/obj/item/organ/tongue/mutanttongue = /obj/item/organ/tongue
 	var/obj/item/organ/tail/mutanttail = null
 	var/obj/item/organ/wings/mutantwings = null
+	var/obj/item/organ/mutantvocalcords = null
+	var/obj/item/organ/mutantresonator = null
 
 	var/obj/item/organ/liver/mutantliver
 	var/obj/item/organ/stomach/mutantstomach
@@ -156,10 +159,12 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 	var/obj/item/organ/eyes/eyes = C.getorganslot(ORGAN_SLOT_EYES)
 	var/obj/item/organ/ears/ears = C.getorganslot(ORGAN_SLOT_EARS)
 	var/obj/item/organ/tongue/tongue = C.getorganslot(ORGAN_SLOT_TONGUE)
+	var/obj/item/organ/vocal_cords/vocal_cords = C.getorganslot(ORGAN_SLOT_VOICE)
 	var/obj/item/organ/liver/liver = C.getorganslot(ORGAN_SLOT_LIVER)
 	var/obj/item/organ/stomach/stomach = C.getorganslot(ORGAN_SLOT_STOMACH)
 	var/obj/item/organ/tail/tail = C.getorganslot(ORGAN_SLOT_TAIL)
 	var/obj/item/organ/wings/wings = C.getorganslot(ORGAN_SLOT_WINGS)
+	var/obj/item/organ/adamantine_resonator/adamantine_resonator = C.getorganslot(ORGAN_SLOT_ADAMANTINE_RESONATOR)
 
 	var/should_have_brain = TRUE
 	var/should_have_heart = !(NOBLOOD in species_traits)
@@ -172,6 +177,8 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 	var/should_have_stomach = !(NOSTOMACH in species_traits)
 	var/should_have_tail = mutanttail
 	var/should_have_wings = mutantwings
+	var/should_have_vocal_cords = mutantvocalcords
+	var/should_have_adamantine_resonator = mutantresonator
 
 	if(heart && (!should_have_heart || replace_current))
 		heart.Remove(C,1)
@@ -260,6 +267,20 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 		if(should_have_tongue && !tongue)
 			tongue = new mutanttongue
 			tongue.Insert(C)
+
+		if(vocal_cords && (!should_have_vocal_cords || replace_current))
+			vocal_cords.Remove(C,1)
+			QDEL_NULL(vocal_cords)
+		if(should_have_vocal_cords && !vocal_cords)
+			vocal_cords = new mutantvocalcords()
+			vocal_cords.Insert(C)
+
+		if(adamantine_resonator && (!should_have_adamantine_resonator || replace_current))
+			adamantine_resonator.Remove(C,1)
+			QDEL_NULL(adamantine_resonator)
+		if(should_have_adamantine_resonator && !adamantine_resonator)
+			adamantine_resonator = new mutantresonator()
+			adamantine_resonator.Insert(C)
 
 	if(old_species)
 		for(var/mutantorgan in old_species.mutant_organs)
@@ -583,7 +604,7 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 				else
 					standing += mutable_appearance(undershirt.icon, undershirt.icon_state, -BODY_LAYER)
 
-		if(H.socks && H.get_num_legs(FALSE) >= 2 && !(DIGITIGRADE in species_traits) && !(NOSOCKS in species_traits))
+		if(H.socks && H.get_num_legs(FALSE) >= 2 && !(DIGITIGRADE in species_traits))
 			var/datum/sprite_accessory/socks/socks = GLOB.socks_list[H.socks]
 			if(socks)
 				standing += mutable_appearance(socks.icon, socks.icon_state, -BODY_LAYER)
@@ -596,12 +617,13 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 
 /datum/species/proc/handle_mutant_bodyparts(mob/living/carbon/human/H, forced_colour)
 	var/list/bodyparts_to_add = mutant_bodyparts.Copy()
-	var/list/relevent_layers = list(BODY_BEHIND_LAYER, BODY_ADJ_LAYER, BODY_FRONT_LAYER)
+	var/list/relevent_layers = list(BODY_BEHIND_LAYER, BODY_ADJ_LAYER, BODY_FRONT_LAYER, BODY_TAUR_LAYER)
 	var/list/standing	= list()
 
 	H.remove_overlay(BODY_BEHIND_LAYER)
 	H.remove_overlay(BODY_ADJ_LAYER)
 	H.remove_overlay(BODY_FRONT_LAYER)
+	H.remove_overlay(BODY_TAUR_LAYER)
 
 	if(!mutant_bodyparts)
 		return
@@ -673,6 +695,66 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 		if(!H.dna.features["ipc_antenna"] || H.dna.features["ipc_antenna"] == "None" || H.head && (H.head.flags_inv & HIDEHAIR) || (H.wear_mask && (H.wear_mask.flags_inv & HIDEHAIR)) || !HD)
 			bodyparts_to_add -= "ipc_antenna"
 
+//CITADEL EDIT
+	//Race specific bodyparts:
+	//Xenos
+	if("xenodorsal" in mutant_bodyparts)
+		if(!H.dna.features["xenodorsal"] || H.dna.features["xenodorsal"] == "None" || (H.wear_suit && (H.wear_suit.flags_inv & HIDEJUMPSUIT)))
+			bodyparts_to_add -= "xenodorsal"
+	if("xenohead" in mutant_bodyparts)//This is an overlay for different castes using different head crests
+		if(!H.dna.features["xenohead"] || H.dna.features["xenohead"] == "None" || H.head && (H.head.flags_inv & HIDEHAIR) || (H.wear_mask && (H.wear_mask.flags_inv & HIDEHAIR)) || !HD || HD.status == BODYPART_ROBOTIC)
+			bodyparts_to_add -= "xenohead"
+	if("xenotail" in mutant_bodyparts)
+		if(!H.dna.features["xenotail"] || H.dna.features["xenotail"] == "None" || H.wear_suit && (H.wear_suit.flags_inv & HIDEJUMPSUIT))
+			bodyparts_to_add -= "xenotail"
+
+	//ara ara
+	if("arachnid_mandibles" in mutant_bodyparts) //Take a closer look at that snout!
+		if((H.wear_mask && (H.wear_mask.flags_inv & HIDESNOUT)) || (H.head && (H.head.flags_inv & HIDESNOUT)) || !HD || HD.status == BODYPART_ROBOTIC)
+			bodyparts_to_add -= "arachnid_mandibles"
+
+	if("arachnid_spinneret" in mutant_bodyparts)
+		if(H.wear_suit && (H.wear_suit.flags_inv & HIDEJUMPSUIT))
+			bodyparts_to_add -= "arachnid_spinneret"
+
+	if("arachnid_legs" in mutant_bodyparts)
+		if(!H.dna.features["arachnid_legs"] || H.dna.features["arachnid_legs"] == "None" || (H.wear_suit && (H.wear_suit.flags_inv & HIDEJUMPSUIT) && (!H.wear_suit.species_exception || !is_type_in_list(src, H.wear_suit.species_exception))))
+			bodyparts_to_add -= "arachnid_legs"
+
+	//Other Races
+	if("mam_tail" in mutant_bodyparts)
+		if(H.wear_suit && (H.wear_suit.flags_inv & HIDETAUR) || (!H.dna.features["taur"] == "None"))
+			bodyparts_to_add -= "mam_tail"
+
+	if("mam_waggingtail" in mutant_bodyparts)
+		if(H.wear_suit && (H.wear_suit.flags_inv & HIDETAUR) || (!H.dna.features["taur"] == "None"))
+			bodyparts_to_add -= "mam_waggingtail"
+		else if ("mam_tail" in mutant_bodyparts)
+			bodyparts_to_add -= "mam_waggingtail"
+
+	if("mam_ears" in mutant_bodyparts)
+		if(!H.dna.features["mam_ears"] || H.dna.features["mam_ears"] == "None" || H.head && (H.head.flags_inv & HIDEEARS) || (H.wear_mask && (H.wear_mask.flags_inv & HIDEEARS)) || !HD || HD.status == BODYPART_ROBOTIC)
+			bodyparts_to_add -= "mam_ears"
+
+	if("mam_snouts" in mutant_bodyparts) //Take a closer look at that snout!
+		if((H.wear_mask && (H.wear_mask.flags_inv & HIDESNOUT)) || (H.head && (H.head.flags_inv & HIDESNOUT)) || !HD || HD.status == BODYPART_ROBOTIC)
+			bodyparts_to_add -= "mam_snouts"
+
+	if("taur" in mutant_bodyparts)
+		if(!H.dna.features["taur"] || H.dna.features["taur"] == "None" || (H.wear_suit && (H.wear_suit.flags_inv & HIDETAUR)))
+			bodyparts_to_add -= "taur"
+
+	if("deco_wings" in mutant_bodyparts)// This one is giving me trouble, maybe this will fix it.
+		if(!H.dna.features["deco_wings"] || H.dna.features["deco_wings"] == "None" || (H.wear_suit && (H.wear_suit.flags_inv & HIDEJUMPSUIT) && (!H.wear_suit.species_exception || !is_type_in_list(src, H.wear_suit.species_exception))))
+			bodyparts_to_add -= "deco_wings"
+
+	if("moth_fluff" in mutant_bodyparts)
+		if(!H.dna.features["moth_fluff"] || H.dna.features["moth_fluff"] == "None" || H.wear_suit && (H.wear_suit.flags_inv & HIDEJUMPSUIT))
+			bodyparts_to_add -= "moth_fluff"
+
+// no mam body markings entry right here???, okay this is in fact correct as per hyperstation where this bit of code comes from (these are actually handled in bodyparts.dm)
+//END EDIT
+
 	//Digitigrade legs are stuck in the phantom zone between true limbs and mutant bodyparts. Mainly it just needs more agressive updating than most limbs.
 	var/update_needed = FALSE
 	var/not_digitigrade = TRUE
@@ -738,6 +820,10 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 					S = GLOB.legs_list[H.dna.features["legs"]]
 				if("moth_wings")
 					S = GLOB.moth_wings_list[H.dna.features["moth_wings"]]
+				if("moth_fluff")
+					S = GLOB.moth_fluffs_list[H.dna.features["moth_fluff"]]
+				if("moth_markings")
+					S = GLOB.moth_markings_list[H.dna.features["moth_markings"]]
 				if("caps")
 					S = GLOB.caps_list[H.dna.features["caps"]]
 				if("ipc_screen")
@@ -748,14 +834,51 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 					S = GLOB.ipc_chassis_list[H.dna.features["ipc_chassis"]]
 				if("insect_type")
 					S = GLOB.insect_type_list[H.dna.features["insect_type"]]
+				if("mam_tail")
+					S = GLOB.mam_tails_list[H.dna.features["mam_tail"]]
+				if("mam_waggingtail")
+					S = GLOB.mam_tails_animated_list[H.dna.features["mam_tail"]]
+				if("mam_body_markings")
+					S = GLOB.mam_body_markings_list[H.dna.features["mam_body_markings"]]
+				// search for fix to issues with mam_body_markings was here!, also I still can not find anything that explains it being out of order.
+				if("mam_ears")
+					S = GLOB.mam_ears_list[H.dna.features["mam_ears"]]
+				if("mam_snouts")
+					S = GLOB.mam_snouts_list[H.dna.features["mam_snouts"]]
+				if("taur")
+					S = GLOB.taur_list[H.dna.features["taur"]]
+				if("deco_wings")
+					S = GLOB.deco_wings_list[H.dna.features["deco_wings"]]
+				if("arachnid_mandibles")
+					S = GLOB.arachnid_mandibles_list[H.dna.features["arachnid_mandibles"]]
+				if("arachnid_spinneret")
+					S = GLOB.arachnid_spinneret_list[H.dna.features["arachnid_spinneret"]]
+				if("arachnid_legs")
+					S = GLOB.arachnid_legs_list[H.dna.features["arachnid_legs"]]
+				if("xenodorsal")
+					S = GLOB.xeno_dorsal_list[H.dna.features["xenodorsal"]]
+				if("xenohead")
+					S = GLOB.xeno_head_list[H.dna.features["xenohead"]]
+				if("xenotail")
+					S = GLOB.xeno_tail_list[H.dna.features["xenotail"]]
 			if(!S || S.icon_state == "none")
 				continue
 
 			var/mutable_appearance/accessory_overlay = mutable_appearance(S.icon, layer = -layer)
 
 			//A little rename so we don't have to use tail_lizard or tail_human when naming the sprites.
-			if(bodypart == "tail_lizard" || bodypart == "tail_human")
+			if(bodypart == "tail_lizard" || bodypart == "tail_human" || bodypart == "mam_tail" || bodypart == "xenotail")
 				bodypart = "tail"
+			if(bodypart == "mam_waggingtail" || bodypart == "waggingtail_human")
+				bodypart = "tailwag"
+			if(bodypart == "mam_ears" || bodypart == "ears")
+				bodypart = "ears"
+			if(bodypart == "mam_snouts" || bodypart == "snout")
+				bodypart = "snout"
+			if(bodypart == "xenohead")
+				bodypart = "xhead"
+			if(bodypart == "moth_wings" || bodypart == "deco_wings")
+				bodypart = "moth_wings"
 			else if(bodypart == "waggingtail_lizard" || bodypart == "waggingtail_human")
 				bodypart = "waggingtail"
 
@@ -767,6 +890,15 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 			if(S.center)
 				accessory_overlay = center_image(accessory_overlay, S.dimension_x, S.dimension_y)
 
+			var/list/colorlist = list()
+			colorlist.Cut()
+			colorlist += ReadRGB("[H.dna.features["mcolor"]]0")
+			colorlist += ReadRGB("[H.dna.features["mcolor2"]]0")
+			colorlist += ReadRGB("[H.dna.features["mcolor3"]]0")
+			colorlist += list(0,0,0, hair_alpha)
+			for(var/index=1, index<=colorlist.len, index++)
+				colorlist[index] = colorlist[index]/255
+
 			if(!(HAS_TRAIT(H, TRAIT_HUSK)))
 				if(!forced_colour)
 					switch(S.color_src)
@@ -775,6 +907,18 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 								accessory_overlay.color = "#[fixed_mut_color]"
 							else
 								accessory_overlay.color = "#[H.dna.features["mcolor"]]"
+						if(MUTCOLORS2)
+							if(fixed_mut_color2)
+								accessory_overlay.color = "#[fixed_mut_color2]"
+							else
+								accessory_overlay.color = "#[H.dna.features["mcolor2"]]"
+						if(MUTCOLORS3)
+							if(fixed_mut_color3)
+								accessory_overlay.color = "#[fixed_mut_color3]"
+							else
+								accessory_overlay.color = "#[H.dna.features["mcolor3"]]"
+						if(MATRIXED)
+							accessory_overlay.color = list(colorlist)
 						if(HAIR)
 							if(hair_color == "mutcolor")
 								accessory_overlay.color = "#[H.dna.features["mcolor"]]"
@@ -784,8 +928,24 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 							accessory_overlay.color = "#[H.facial_hair_color]"
 						if(EYECOLOR)
 							accessory_overlay.color = "#[H.eye_color]"
+						if(WINGCOLOR)
+							accessory_overlay.color = "#[H.wing_color]"
 				else
 					accessory_overlay.color = forced_colour
+			else
+				if(bodypart == "ears")
+					accessory_overlay.icon_state = "m_ears_none_[layertext]"
+				if(bodypart == "tail")
+					accessory_overlay.icon_state = "m_tail_husk_[layertext]"
+				if(bodypart == MATRIXED) // I don't know if this works!  control flow error
+					var/list/husklist = list()
+					husklist += ReadRGB("#a3a3a3")
+					husklist += ReadRGB("#a3a3a3")
+					husklist += ReadRGB("#a3a3a3")
+					husklist += list(0,0,0, hair_alpha)
+					for(var/index=1, index<=husklist.len, index++)
+						husklist[index] = husklist[index]/255
+					accessory_overlay.color = husklist
 			standing += accessory_overlay
 
 			if(S.hasinner)
@@ -800,13 +960,87 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 
 				standing += inner_accessory_overlay
 
+			if(S.extra) //apply the extra overlay, if there is one
+				var/mutable_appearance/extra_accessory_overlay = mutable_appearance(S.icon, layer = -layer)
+				if(S.gender_specific)
+					extra_accessory_overlay.icon_state = "[g]_[bodypart]_extra_[S.icon_state]_[layertext]"
+				else
+					extra_accessory_overlay.icon_state = "m_[bodypart]_extra_[S.icon_state]_[layertext]"
+				if(S.center)
+					extra_accessory_overlay = center_image(extra_accessory_overlay, S.dimension_x, S.dimension_y)
+
+
+				switch(S.extra_color_src) //change the color of the extra overlay
+					if(MUTCOLORS)
+						if(fixed_mut_color)
+							extra_accessory_overlay.color = "#[fixed_mut_color]"
+						else
+							extra_accessory_overlay.color = "#[H.dna.features["mcolor"]]"
+					if(MUTCOLORS2)
+						if(fixed_mut_color2)
+							extra_accessory_overlay.color = "#[fixed_mut_color2]"
+						else
+							extra_accessory_overlay.color = "#[H.dna.features["mcolor2"]]"
+					if(MUTCOLORS3)
+						if(fixed_mut_color3)
+							extra_accessory_overlay.color = "#[fixed_mut_color3]"
+						else
+							extra_accessory_overlay.color = "#[H.dna.features["mcolor3"]]"
+					if(HAIR)
+						if(hair_color == "mutcolor")
+							extra_accessory_overlay.color = "#[H.dna.features["mcolor3"]]"
+						else
+							extra_accessory_overlay.color = "#[H.hair_color]"
+					if(FACEHAIR)
+						extra_accessory_overlay.color = "#[H.facial_hair_color]"
+					if(EYECOLOR)
+						extra_accessory_overlay.color = "#[H.eye_color]"
+					if(WINGCOLOR)
+						extra_accessory_overlay.color = "#[H.wing_color]"
+				standing += extra_accessory_overlay
+
+			if(S.extra2) //apply the extra overlay, if there is one
+				var/mutable_appearance/extra2_accessory_overlay = mutable_appearance(S.icon, layer = -layer)
+				if(S.gender_specific)
+					extra2_accessory_overlay.icon_state = "[g]_[bodypart]_extra2_[S.icon_state]_[layertext]"
+				else
+					extra2_accessory_overlay.icon_state = "m_[bodypart]_extra2_[S.icon_state]_[layertext]"
+				if(S.center)
+					extra2_accessory_overlay = center_image(extra2_accessory_overlay, S.dimension_x, S.dimension_y)
+
+				switch(S.extra2_color_src) //change the color of the extra overlay
+					if(MUTCOLORS)
+						if(fixed_mut_color)
+							extra2_accessory_overlay.color = "#[fixed_mut_color]"
+						else
+							extra2_accessory_overlay.color = "#[H.dna.features["mcolor"]]"
+					if(MUTCOLORS2)
+						if(fixed_mut_color2)
+							extra2_accessory_overlay.color = "#[fixed_mut_color2]"
+						else
+							extra2_accessory_overlay.color = "#[H.dna.features["mcolor2"]]"
+					if(MUTCOLORS3)
+						if(fixed_mut_color3)
+							extra2_accessory_overlay.color = "#[fixed_mut_color3]"
+						else
+							extra2_accessory_overlay.color = "#[H.dna.features["mcolor3"]]"
+					if(HAIR)
+						if(hair_color == "mutcolor3")
+							extra2_accessory_overlay.color = "#[H.dna.features["mcolor"]]"
+						else
+							extra2_accessory_overlay.color = "#[H.hair_color]"
+					if(WINGCOLOR)
+						extra2_accessory_overlay.color = "#[H.wing_color]"
+				standing += extra2_accessory_overlay
+
+
 		H.overlays_standing[layer] = standing.Copy()
 		standing = list()
 
 	H.apply_overlay(BODY_BEHIND_LAYER)
 	H.apply_overlay(BODY_ADJ_LAYER)
 	H.apply_overlay(BODY_FRONT_LAYER)
-
+	H.apply_overlay(BODY_TAUR_LAYER)
 
 //This exists so sprite accessories can still be per-layer without having to include that layer's
 //number in their sprite name, which causes issues when those numbers change.
@@ -818,7 +1052,8 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 			return "ADJ"
 		if(BODY_FRONT_LAYER)
 			return "FRONT"
-
+		if(BODY_TAUR_LAYER)
+			return "TAUR"
 
 /datum/species/proc/spec_life(mob/living/carbon/human/H)
 	if(HAS_TRAIT(H, TRAIT_NOBREATH))
@@ -892,7 +1127,7 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 				return FALSE
 			if(num_legs < 2)
 				return FALSE
-			if(DIGITIGRADE in species_traits)
+			if(NOSHOES in species_traits)
 				if(!disable_warning)
 					to_chat(H, "<span class='warning'>The footwear around here isn't compatible with your feet!</span>")
 				return FALSE

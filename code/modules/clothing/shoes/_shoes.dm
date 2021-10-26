@@ -16,6 +16,9 @@
 	var/offset = 0
 	var/equipped_before_drop = FALSE
 	var/can_be_bloody = TRUE
+	//CITADEL EDIT Enables digitigrade shoe styles
+	var/adjusted = NORMAL_STYLE
+	mutantrace_variation = MUTANTRACE_VARIATION
 
 /obj/item/clothing/shoes/ComponentInitialize()
 	. = ..()
@@ -56,6 +59,19 @@
 
 /obj/item/clothing/shoes/equipped(mob/user, slot)
 	. = ..()
+
+	if(slot != ITEM_SLOT_FEET)
+		return
+
+	if(mutantrace_variation && ishuman(user))
+		var/mob/living/carbon/human/H = user
+		if(DIGITIGRADE in H.dna.species.species_traits)
+			adjusted = DIGITIGRADE_STYLE
+			H.update_inv_shoes()
+		else if(adjusted == DIGITIGRADE_STYLE)
+			adjusted = NORMAL_STYLE
+			H.update_inv_shoes()
+
 	if(offset && (slot_flags & slot))
 		user.pixel_y += offset
 		worn_y_dimension -= (offset * 2)

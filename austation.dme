@@ -24,6 +24,9 @@
 #include "austation\code\__DEFINES\RPD.dm"
 #include "austation\code\__DEFINES\sound.dm"
 #include "austation\code\__DEFINES\traits.dm"
+//furbee edit
+#include "code\__DEFINES\citadel_defines.dm"
+#include "modular_citadel\furbee_define_includes.dm"
 // END_DEFINE_INCLUDE
 
 // BEGIN_BEESTATION_INCLUDE
@@ -295,4 +298,30 @@
 #include "austation\code\modules\events\disease_outbreak.dm"
 #include "austation\code\modules\events\electrical_storm.dm"
 #include "austation\code\modules\events\space_dragon.dm"
+//furbee
+#include "code\__HELPERS\_cit_helpers.dm"
+#include "code\modules\mob\dead\new_player\sprite_accessories\_sprite_accessories.dm"
+#include "code\modules\mob\dead\new_player\sprite_accessories\moth_fluff.dm"
+#include "code\modules\mob\dead\new_player\sprite_accessories\moth_wings.dm"
+#include "code\modules\mob\dead\new_player\sprite_accessories\tails.dm"
+#include "code\modules\mob\dead\new_player\sprite_accessories\wings.dm"
+#include "modular_citadel\furbee_includes.dm"
+
+//#include "code\modules\mob\dead\new_player\sprite_accessories\sprite_accessories_old.dm"
+//#include "code\modules\mob\dead\new_player\sprite_accessories\body_markings.dm"
+//#include "code\modules\mob\dead\new_player\sprite_accessories\caps.dm"
+//#include "code\modules\mob\dead\new_player\sprite_accessories\ears.dm"
+//#include "code\modules\mob\dead\new_player\sprite_accessories\frills.dm"
+//#include "code\modules\mob\dead\new_player\sprite_accessories\hair_face.dm"
+//#include "code\modules\mob\dead\new_player\sprite_accessories\hair_head.dm"
+//#include "code\modules\mob\dead\new_player\sprite_accessories\horns.dm"
+//#include "code\modules\mob\dead\new_player\sprite_accessories\legs.dm"
+//#include "code\modules\mob\dead\new_player\sprite_accessories\pines.dm"
+//#include "code\modules\mob\dead\new_player\sprite_accessories\spines.dm"
+//#include "code\modules\mob\dead\new_player\sprite_accessories\snouts.dm"
+//#include "code\modules\mob\dead\new_player\sprite_accessories\socks.dm"
+//#include "code\modules\mob\dead\new_player\sprite_accessories\IPC.dm"
+//#include "code\modules\mob\dead\new_player\sprite_accessories\undershirt.dm"
+//#include "code\modules\mob\dead\new_player\sprite_accessories\underwear.dm"
+
 // END_INCLUDE

@@ -490,6 +490,8 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 
 	all_quirks = SANITIZE_LIST(all_quirks)
 
+	cit_character_pref_load(S)
+
 	return TRUE
 
 /datum/preferences/proc/save_character()
@@ -558,6 +560,8 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 
 	//Quirks
 	WRITE_FILE(S["all_quirks"]			, all_quirks)
+
+	cit_character_pref_save(S)
 
 	return TRUE
 

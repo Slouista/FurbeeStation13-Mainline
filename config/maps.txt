@@ -41,12 +41,10 @@ map deltastation
 	votable
 endmap
 
-#Does not support fastmos
-
 map kilostation
 	maxplayers 60
+    default
 	votable
-	disabled
 endmap
 
 #Debug Maps, you probably don't want these enabled.
@@ -60,7 +58,6 @@ map multiz_debug
 endmap
 
 map austation
-    default
     votable
 endmap
 
