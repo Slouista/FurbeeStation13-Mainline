@@ -1,14 +1,14 @@
 ## Uncomment to enable automatic switching to sandbox when player count falls below a threshold
-AUTOSANDBOX_ENABLED
+#AUTOSANDBOX_ENABLED
 
 ## The threshold at which the server will automatically swap from secret to sandbox if server population is less than or equal to this number (default: 5)
-AUTOSANDBOX_MIN 1
+#AUTOSANDBOX_MIN 1
 
 ## The threshold at which the server will automatically swap from sandbox to secret if server population is greater than or equal to this number (default: 10)
-AUTOSANDBOX_MAX 2
+#AUTOSANDBOX_MAX 2
 
 ## Server tagline: This will appear right below the server's title.
-SERVERTAGLINE A Furry Bee-Based Server.
+SERVERTAGLINE A Clean Furry Bee-Based Server.
 
 ## Bluespace Miners.
 

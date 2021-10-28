@@ -297,26 +297,19 @@ GLOBAL_VAR(restart_counter)
 
 /world/proc/update_status()
 
-
 	var/list/features = list()
-
-	if(GLOB.master_mode) // hides the gamemode from the hub entry, removes some useless info from the hub entry
-		features += GLOB.master_mode
-	if (!GLOB.enter_allowed)
-		features += "closed"
-
 	var/s = ""
 	var/hostedby
 	if(config)
 		var/server_name = CONFIG_GET(string/servername)
 		if (server_name)
 			s += "<b>[server_name]</b> &#8212; "
-//		features += "[CONFIG_GET(flag/norespawn) ? "no " : ""]respawn" // removes some useless info from the hub entry
-//		if(CONFIG_GET(flag/allow_vote_mode))
-//			features += "vote"
-//		if(CONFIG_GET(flag/allow_ai))
-//			features += "AI allowed"
-//		hostedby = CONFIG_GET(string/hostedby)
+//	features += "[CONFIG_GET(flag/norespawn) ? "no " : ""]respawn" // removes some useless info from the hub entry
+//	if(CONFIG_GET(flag/allow_vote_mode))
+//		features += "vote"
+//	if(CONFIG_GET(flag/allow_ai))
+//		features += "AI allowed"
+//	hostedby = CONFIG_GET(string/hostedby)
 
 	s += "<b>[station_name()]</b>";
 	s += " ("
@@ -325,6 +318,11 @@ GLOBAL_VAR(restart_counter)
 	s += "</a>"
 	s += ")\]" //encloses the server title in brackets to make the hub entry fancier
 	s += "<br>[CONFIG_GET(string/servertagline)]<br>" //adds a tagline!
+
+	if(CONFIG_GET(flag/panic_bunker))
+		features += "Whitelist"
+	else if(!CONFIG_GET(flag/panic_bunker))
+		features += "Open-Join"
 
 	var/n = 0
 	for (var/mob/M in GLOB.player_list)
