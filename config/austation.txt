@@ -8,7 +8,7 @@
 #AUTOSANDBOX_MAX 2
 
 ## Server tagline: This will appear right below the server's title.
-SERVERTAGLINE A Clean Furry Bee-Based Server.
+SERVERTAGLINE A Furry Bee-Based MRP Station.
 
 ## Bluespace Miners.
 
