@@ -97,6 +97,9 @@
 	WRITE_FILE(S["feature_xeno_tail"], features["xenotail"])
 	WRITE_FILE(S["feature_xeno_dors"], features["xenodorsal"])
 	WRITE_FILE(S["feature_xeno_head"], features["xenohead"])
+	//Moth
+	WRITE_FILE(S["feature_moth_fluff"]			, features["moth_fluff"])
+	WRITE_FILE(S["feature_moth_markings"]		, features["moth_markings"])
 	//araara
 	WRITE_FILE(S["feature_arachnid_legs"]			, features["arachnid_legs"])
 	WRITE_FILE(S["feature_arachnid_spinneret"]		, features["arachnid_spinneret"])
