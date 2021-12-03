@@ -93,7 +93,7 @@ GLOBAL_VAR(monkey_notify_cooldown)
 	desc = "A severed monkey tail. Return this to a monkey."
 	tail_type = "Monkey"
 	icon_state = "monkeytail"
-
+/*
 /obj/item/organ/tail/monkey/Insert(mob/living/carbon/human/H, special = 0, drop_if_replaced = TRUE)
 	..()
 	if(istype(H))
@@ -110,7 +110,7 @@ GLOBAL_VAR(monkey_notify_cooldown)
 		H.dna.features["tail_human"] = "None"
 		H.dna.species.mutant_bodyparts -= "tail_human"
 		H.update_body()
-
+*/
 /// sometimes you want to create an object connected to a race, the monkeyhat uses a lot of the same code plasmemes use to get there job specifc suits
 /datum/species/monkeyman/before_equip_job(datum/job/J, mob/living/carbon/human/H, visualsOnly = FALSE)
 	var/current_job = J.title

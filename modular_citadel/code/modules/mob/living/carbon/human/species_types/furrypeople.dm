@@ -16,6 +16,8 @@
 	burnmod = 1.05
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_PRIDE | MIRROR_MAGIC | RACE_SWAP | ERT_SPAWN | SLIME_EXTRACT
 	species_language_holder = /datum/language_holder/snowflake
+	mutantears = /obj/item/organ/ears/cat
+	mutanttail = /obj/item/organ/tail
 
 //Curiosity killed the cat's wagging tail.
 /datum/species/mammal/spec_death(gibbed, mob/living/carbon/human/H)
@@ -150,6 +152,8 @@
 	//meat = /obj/item/reagent_containers/food/snacks/carpmeat/aquatic
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_PRIDE | MIRROR_MAGIC | RACE_SWAP | ERT_SPAWN | SLIME_EXTRACT
 	species_language_holder = /datum/language_holder/snowflake
+	mutantears = /obj/item/organ/ears/cat
+	mutanttail = /obj/item/organ/tail
 
 /datum/species/aquatic/spec_death(gibbed, mob/living/carbon/human/H)
 	if(H)
@@ -201,6 +205,8 @@
 	burnmod = 1.05
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_PRIDE | MIRROR_MAGIC | RACE_SWAP | ERT_SPAWN | SLIME_EXTRACT
 	species_language_holder = /datum/language_holder/moth
+	mutantears = /obj/item/organ/ears/cat
+	mutanttail = /obj/item/organ/tail
 
 /datum/species/insect/handle_chemicals(datum/reagent/chem, mob/living/carbon/human/H)
 	. = ..()

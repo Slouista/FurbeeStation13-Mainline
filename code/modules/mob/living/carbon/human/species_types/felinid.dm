@@ -12,10 +12,11 @@
 	default_features = list("mcolor" = "FFF", "wings" = "None", "tail_human" = "Cat", "ears" = "Cat")
 	//forced_features = list("tail_human" = "Cat", "ears" = "Cat")//Cool option however I want a varity of animal humanoid features available
 
-	mutantears = /obj/item/organ/ears/cat
-	mutanttail = /obj/item/organ/tail/cat
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_PRIDE | MIRROR_MAGIC | RACE_SWAP | ERT_SPAWN | SLIME_EXTRACT
 
+	mutantears = /obj/item/organ/ears/cat
+	mutanttail = /obj/item/organ/tail
+	species_language_holder = /datum/language_holder/snowflake
 	swimming_component = /datum/component/swimming/felinid
 
 /datum/species/human/felinid/qualifies_for_rank(rank, list/features)
@@ -48,7 +49,7 @@
 		mutant_bodyparts -= "waggingtail_human"
 		mutant_bodyparts |= "tail_human"
 	H.update_body()
-
+/*
 /datum/species/human/felinid/on_species_gain(mob/living/carbon/C, datum/species/old_species, pref_load)
 	if(ishuman(C))
 		var/mob/living/carbon/human/H = C
@@ -96,7 +97,7 @@
 			NT.Insert(H, drop_if_replaced = FALSE)
 		else
 			tail.Remove(H)
-
+*/
 /datum/species/human/felinid/handle_chemicals(datum/reagent/chem, mob/living/carbon/human/M)
 	.=..()
 	if(istype(chem, /datum/reagent/consumable/cocoa))
