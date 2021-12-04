@@ -249,6 +249,7 @@
 				for(var/number in 1 to total_days_in_player_month)
 					days += number
 				var/player_day = input(src, "What day of the month were you born in.") as anything in days
+				create_message("note", src, "SYSTEM (Automated-Age-Gate)", "DOB " + player_month + " of " + player_year, null, null, 0, 0, null, -1, "None")
 				if(player_day <= current_day)
 					//their birthday has passed
 					age_gate_result = TRUE
