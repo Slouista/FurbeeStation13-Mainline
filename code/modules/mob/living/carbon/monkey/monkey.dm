@@ -60,6 +60,8 @@
 	internal_organs += new /obj/item/organ/ears
 	internal_organs += new /obj/item/organ/liver
 	internal_organs += new /obj/item/organ/stomach
+	internal_organs += new /obj/item/organ/vocal_cords/overdeveloped
+	internal_organs += new /obj/item/organ/tail/monkey
 	..()
 
 /mob/living/carbon/monkey/on_reagent_change()

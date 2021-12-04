@@ -47,7 +47,9 @@ GLOBAL_VAR(monkey_notify_cooldown)
 	icon_limbs = 'modular_citadel/icons/mob/monkeyman_parts.dmi'
 	say_mod = "chimpers"
 
+	mutant_bodyparts = list("tail_human")
 	default_features = list("mcolor" = "FFF", "wings" = "None")
+	forced_features = list("tail_human" = "Monkey")
 	inherent_traits = list(TRAIT_MONKEYLIKE) //currently, this is not enough of a downside for any huge buffs. isadvancedtooluser() is oldcode and not used in modern shit, and monkeys will only get cool shit when that is brought to date
 	species_traits = list(NOEYESPRITES) //monkeys have beady little black eyes, and nothing else
 
@@ -93,6 +95,7 @@ GLOBAL_VAR(monkey_notify_cooldown)
 	desc = "A severed monkey tail. Return this to a monkey."
 	tail_type = "Monkey"
 	icon_state = "monkeytail"
+	icon = 'modular_citadel/icons/mob/monkeyman_parts.dmi'
 /*
 /obj/item/organ/tail/monkey/Insert(mob/living/carbon/human/H, special = 0, drop_if_replaced = TRUE)
 	..()
