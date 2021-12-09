@@ -7,6 +7,7 @@
 	var/datum/species/species = new /datum/species/human //The type of mutant race the player is if applicable (i.e. potato-man)
 	var/list/features = list("FFF") //first value is mutant color
 	var/real_name //Stores the real name of the person who originally got this dna datum. Used primarely for changelings,
+	var/custom_species	//siiiiigh I guess this is important
 	var/list/mutations = list()   //All mutations are from now on here
 	var/list/temporary_mutations = list() //Temporary changes to the UE
 	var/list/previous = list() //For temporary name/ui/ue/blood_type modifications
@@ -46,6 +47,7 @@
 	destination.set_species(species.type, icon_update=0)
 	destination.dna.features = features.Copy()
 	destination.dna.real_name = real_name
+	destination.dna.custom_species = custom_species
 	destination.dna.temporary_mutations = temporary_mutations.Copy()
 	if(transfer_SE)
 		destination.dna.mutation_index = mutation_index
@@ -60,6 +62,7 @@
 	new_dna.features = features.Copy()
 	new_dna.species = new species.type
 	new_dna.real_name = real_name
+	new_dna.custom_species = custom_species
 	new_dna.mutations = mutations.Copy()
 
 //See mutation.dm for what 'class' does. 'time' is time till it removes itself in decimals. 0 for no timer
@@ -208,7 +211,7 @@
 		return
 
 /datum/dna/proc/is_same_as(datum/dna/D)
-	if(uni_identity == D.uni_identity && mutation_index == D.mutation_index && real_name == D.real_name)
+	if(uni_identity == D.uni_identity && mutation_index == D.mutation_index && real_name == D.real_name && custom_species == D.custom_species)
 		if(species.type == D.species.type && features == D.features && blood_type == D.blood_type)
 			return 1
 	return 0

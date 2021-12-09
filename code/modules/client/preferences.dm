@@ -128,6 +128,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/list/custom_names = list()
 	var/preferred_ai_core_display = "Blue"
 	var/prefered_security_department = SEC_DEPT_RANDOM
+	var/custom_species = null
 
 	//Quirk list
 	var/list/all_quirks = list()
@@ -292,6 +293,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			dat += "<table width='100%'><tr><td width='24%' valign='top'>"
 
 			dat += "<b>Species:</b><BR><a href='?_src_=prefs;preference=species;task=input'>[pref_species.name]</a><BR>"
+			dat += "<b>Custom Species Name:</b><a style='display:block;width:100px' href='?_src_=prefs;preference=custom_species;task=input'>[custom_species ? custom_species : "None"]</a><BR>"
 
 			dat += "<b>Underwear:</b><BR><a href ='?_src_=prefs;preference=underwear;task=input'>[underwear]</a><BR>"
 			dat += "<b>Underwear Color:</b><BR><span style='border: 1px solid #161616; background-color: #[underwear_color];'>&nbsp;&nbsp;&nbsp;</span> <a href='?_src_=prefs;preference=underwear_color;task=input'>Change</a><BR>"
@@ -1704,9 +1706,9 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					if(result)
 						var/new_species_type = GLOB.species_list[result]
 						var/datum/species/new_species = new new_species_type()
-
 						//if (!CONFIG_GET(keyed_list/paywall_races)[new_species.id] || IS_PATRON(parent.ckey) || parent.holder)
 						pref_species = new_species
+						custom_species = null
 						if(!("body_markings" in pref_species.default_features))
 							features["body_markings"] = "None"
 						if(!("mam_body_markings" in pref_species.default_features))
@@ -1740,6 +1742,14 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 							if(alert(parent, "This species is only accessible to our patrons. Would you like to subscribe?", "Patron Locked", "Yes", "No") == "Yes")
 								parent.donate()
 						*/
+
+				if("custom_species")
+					var/new_species = reject_bad_name(input(user, "Choose your species subtype, if unique. This will show up on examinations and health scans. Do not abuse this:", "Character Preference", custom_species) as null|text)
+					if(new_species)
+						custom_species = new_species
+					else
+						custom_species = null
+
 
 				if("mutant_color")
 					var/new_mutantcolor = input(user, "Choose your character's alien/mutant color:", "Character Preference","#"+features["mcolor"]) as color|null
@@ -2461,7 +2471,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 	character.real_name = real_name
 	character.name = character.real_name
-
+	character.custom_species = custom_species
 	character.gender = gender
 	character.age = age
 
@@ -2501,6 +2511,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	character.dna.features = features.Copy()
 	character.set_species(chosen_species, icon_update = FALSE, pref_load = TRUE)
 	character.dna.real_name = character.real_name
+	character.dna.custom_species = character.custom_species
 
 	if("tail_lizard" in pref_species.default_features)
 		character.dna.species.mutant_bodyparts |= "tail_lizard"
