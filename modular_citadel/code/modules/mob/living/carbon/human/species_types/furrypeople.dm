@@ -88,10 +88,10 @@
 
 /datum/breathing_class/nitrogen
 	gases = list(
-		GAS_NITROGEN = 0.8
+		GAS_N2 = 1
 	)
 	products = list(
-		GAS_MIASMA = 0.5
+		GAS_H2O = 1
 	)
 	low_alert_category = "not_enough_nitrogen"
 	low_alert_datum = /atom/movable/screen/alert/not_enough_nitro
@@ -102,6 +102,8 @@
 	name = "air capillary sack"
 	desc = "A spongy mass for filtering nitrogen from the air."
 	breathing_class = BREATH_NITROGEN
+	safe_breath_min = 16
+	safe_breath_max = 80
 
 //
 /datum/species/avian/spec_death(gibbed, mob/living/carbon/human/H)
