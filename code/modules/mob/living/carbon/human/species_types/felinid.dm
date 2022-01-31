@@ -8,8 +8,9 @@
 	disliked_food = VEGETABLES | SUGAR
 	liked_food = DAIRY | MEAT
 
+	species_traits = list(MUTCOLORS_PARTSONLY,WINGCOLOR,EYECOLOR,HAIR,FACEHAIR,LIPS)
 	mutant_bodyparts = list("ears", "tail_human")
-	default_features = list("mcolor" = "FFF", "wings" = "None", "tail_human" = "Cat", "ears" = "Cat")
+	default_features = list("mcolor" = "FFF","mcolor2" = "FFF","mcolor3" = "FFF", "wings" = "None", "tail_human" = "Cat", "ears" = "Cat")
 	//forced_features = list("tail_human" = "Cat", "ears" = "Cat")//Cool option however I want a varity of animal humanoid features available
 
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_PRIDE | MIRROR_MAGIC | RACE_SWAP | ERT_SPAWN | SLIME_EXTRACT
