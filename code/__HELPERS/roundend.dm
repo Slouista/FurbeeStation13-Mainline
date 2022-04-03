@@ -212,7 +212,7 @@
 		if(C)
 
 			C?.process_endround_metacoin()
-			C?.playtitlemusic(40)
+			C?.playtitlemusic()
 
 			if(CONFIG_GET(flag/allow_crew_objectives))
 				var/mob/M = C?.mob

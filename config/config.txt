@@ -244,13 +244,13 @@ CHECK_RANDOMIZER
 #SERVER  byond://sage.beestation13.com:7878
 
 ## forum address
-FORUMURL https://letmegooglethat.com/?q=space+movie+from+1992
+FORUMURL https://colibriwp.com/blog/wp-content/uploads/2019/07/2488756.jpg
 
 ## Wiki address
 WIKIURL https://wiki.beestation13.com/view
 
 ## Rules address
-RULESURL https://letmegooglethat.com/?q=space+movie+from+1992
+RULESURL https://discord.gg/69WsShCdxa
 
 ## Github address
 GITHUBURL https://github.com/Slouista/FurbeeStation13-Mainline
@@ -260,7 +260,7 @@ GITHUBURL https://github.com/Slouista/FurbeeStation13-Mainline
 #ISSUE_LABEL Ingame Issue Report
 
 ## Donation URL
-DONATEURL https://letmegooglethat.com/?q=space+movie+from+1992
+DONATEURL https://colibriwp.com/blog/wp-content/uploads/2019/07/2488756.jpg
 
 ## Discord Invite
 DISCORDURL https://discord.gg/69WsShCdxa

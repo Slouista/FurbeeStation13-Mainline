@@ -33,7 +33,7 @@
 	set hidden = 1
 	var/rulesurl = CONFIG_GET(string/rulesurl)
 	if(rulesurl)
-		if(alert("This will open the rules in your browser. Are you sure?",,"Yes","No")!="Yes")
+		if(alert("This will send you a link to join our discord where you can read the rules. Are you sure?",,"Yes","No")!="Yes")
 			return
 		src << link(rulesurl)
 	else

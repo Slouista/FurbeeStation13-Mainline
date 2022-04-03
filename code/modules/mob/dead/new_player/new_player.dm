@@ -99,8 +99,8 @@
 
 /mob/dead/new_player/proc/age_gate()
 	var/list/dat = list("<center>")
-	dat += "Enter your date of birth here, to confirm that you are over 18.<BR>"
-	dat += "<b>Your date of birth is not saved, only the fact that you are over/under 18 is.</b><BR>"
+	dat += "Enter your date of birth here, to confirm that you are over 16.<BR>"
+	dat += "<b>Your date of birth is not saved, only the fact that you are over/under 16 is.</b><BR>"
 	dat += "</center>"
 
 	dat += "<form action='?src=[REF(src)]'>"
