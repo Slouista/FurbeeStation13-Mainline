@@ -7,10 +7,10 @@
 /datum/chemical_reaction/reagent_explosion/on_reaction(datum/reagents/holder, created_volume)
 	explode(holder, created_volume)
 
-/datum/chemical_reaction/reagent_explosion/proc/explode(datum/reagents/holder, created_volume)
+/datum/chemical_reaction/reagent_explosion/proc/explode(datum/reagents/holder, created_volume, turf/override)
 	var/power = modifier + round(created_volume/strengthdiv, 1)
 	if(power > 0)
-		var/turf/T = get_turf(holder.my_atom)
+		var/turf/T = override || get_turf(holder.my_atom)
 		var/inside_msg
 		if(ismob(holder.my_atom))
 			var/mob/M = holder.my_atom
@@ -98,7 +98,9 @@
 	mix_message = "<span class='boldannounce'>Sparks start flying around the black powder!</span>"
 
 /datum/chemical_reaction/reagent_explosion/blackpowder_explosion/on_reaction(datum/reagents/holder, created_volume)
-	addtimer(CALLBACK(src, .proc/explode, holder, created_volume), rand(50,100))
+	var/turf/T = get_turf(holder.my_atom)
+	sleep(rand(50,100))
+	..(holder, created_volume, T)
 
 /datum/chemical_reaction/thermite
 	name = "Thermite"
