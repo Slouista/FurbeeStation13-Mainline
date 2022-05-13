@@ -269,6 +269,7 @@
 	icon_limbs = DEFAULT_BODYPART_ICON_CITADEL
 	species_traits = list(MUTCOLORS,EYECOLOR,LIPS,WINGCOLOR)
 	inherent_biotypes = list(MOB_ORGANIC, MOB_HUMANOID)
+	mutant_organs = list(/obj/item/organ/tongue/alien)
 	mutant_bodyparts = list("xenotail", "xenohead", "xenodorsal", "mam_body_markings", "taur", "legs", "deco_wings")
 	default_features = list("xenotail"="Xenomorph Tail","xenohead"="Standard","xenodorsal"="Standard", "mam_body_markings" = "Xeno","mcolor" = "0F0","mcolor2" = "0F0","mcolor3" = "0F0","taur" = "None", "legs" = "Digitigrade Legs", "deco_wings" = "None")
 	attack_verb = "slash"
@@ -280,7 +281,7 @@
 	damage_overlay_type = "xeno"
 	liked_food = MEAT
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_PRIDE | MIRROR_MAGIC | RACE_SWAP | ERT_SPAWN | SLIME_EXTRACT
-	species_language_holder = /datum/language_holder/alien
+	species_language_holder = /datum/language_holder/alienhybrid
 
 /datum/species/xeno/on_species_gain(mob/living/carbon/human/C, datum/species/old_species)
 	C.grant_language(/datum/language/xenocommon)
@@ -297,6 +298,12 @@
 	if(DIGITIGRADE in species_traits)
 		C.Digitigrade_Leg_Swap(TRUE)
 	. = ..()
+
+/datum/language_holder/alienhybrid
+	understood_languages = list(/datum/language/common = list(LANGUAGE_ATOM),
+							/datum/language/xenocommon = list(LANGUAGE_ATOM))
+	spoken_languages = list(/datum/language/common = list(LANGUAGE_ATOM),
+							/datum/language/xenocommon = list(LANGUAGE_ATOM))
 
 //Synthetic Lizard
 /datum/species/synthliz
