@@ -8,7 +8,7 @@
 #AUTOSANDBOX_MAX 2
 
 ## Server tagline: This will appear right below the server's title.
-SERVERTAGLINE A Furry Bee-Based MRP Station.
+SERVERTAGLINE |US-West Dedicated|MRP|Furry BeeStation Fork|2.6 Years|
 
 ## Bluespace Miners.
 

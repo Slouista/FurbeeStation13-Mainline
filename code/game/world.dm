@@ -322,7 +322,7 @@ GLOBAL_VAR(restart_counter)
 	if(CONFIG_GET(flag/panic_bunker))
 		features += "Whitelist"
 	else if(!CONFIG_GET(flag/panic_bunker))
-		features += "Open-Join"
+		features += "No Whitelist"
 
 	var/n = 0
 	for (var/mob/M in GLOB.player_list)
